@@ -98,13 +98,16 @@ public class GraphiteLogger {
 
     private void logToGraphite(StringBuffer lines) throws Exception {
         String msg = lines.toString();
-        System.out.println("Writing [{"+msg+"}] to graphite");
+        System.out.println("Writing [{" + msg + "}] to graphite");
         Socket socket = new Socket(graphiteHost, graphitePort);
         try {
             Writer writer = new OutputStreamWriter(socket.getOutputStream());
             writer.write(msg);
             writer.flush();
             writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         } finally {
             socket.close();
         }
