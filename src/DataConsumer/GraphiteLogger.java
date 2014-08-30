@@ -37,7 +37,7 @@ public class GraphiteLogger {
         this.graphitePort = graphitePort;
     }
 
-    public void logToGraphite(Map list){
+    public void logToGraphite(Map list) throws Exception {
         Long curTimeInSec = System.currentTimeMillis() / 1000;
         StringBuffer lines = new StringBuffer();
         Iterator iterator = list.entrySet().iterator();
@@ -49,16 +49,21 @@ public class GraphiteLogger {
         try {
             logToGraphite(lines);
         } catch (Exception e){
-
+            System.out.println(e.toString());
+            throw e;
         }
     }
-    public void logToGraphite(String key, long value) {
+    public void logToGraphite(String key, long value) throws Throwable {
         Map stats = new HashMap();
         stats.put(key, value);
-        logToGraphite(key, String.valueOf(value));
+        try {
+            logToGraphite(key, String.valueOf(value));
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
-    public void logToGraphite(String stats, String value) {
+    public void logToGraphite(String stats, String value) throws Throwable {
         if (stats.isEmpty()) {
             return;
         }
@@ -67,7 +72,9 @@ public class GraphiteLogger {
             String nodeIdentifier = getHostName();
             logToGraphite(nodeIdentifier, stats, value);
         } catch (Throwable t) {
-            System.out.println("Can't log to graphite");
+            System.out.println("Can't log to graphite ");
+            System.out.println(t.toString());
+            throw t;
         }
     }
 

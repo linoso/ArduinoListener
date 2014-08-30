@@ -18,7 +18,7 @@ public class Graphite implements ConsumerInterface {
     }
 
     @Override
-    public void publish(SingleRead read) {
+    public void publish(SingleRead read) throws Exception {
         Map sr = new HashMap();
         sr.put("pressure", String.valueOf(read.getPressure()));
         sr.put("temp1", String.valueOf(read.getTemp1()));

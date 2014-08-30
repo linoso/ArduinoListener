@@ -14,7 +14,7 @@ public class Processer {
         this.consumer = consumer;
     }
 
-    public void processData(){
+    public void processData() throws Exception {
         SingleRead read = provider.read();
         consumer.publish(read);
     }
