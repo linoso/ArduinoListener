@@ -11,7 +11,7 @@ import java.util.Map;
 public class Graphite implements ConsumerInterface {
 
     GraphiteLogger logger;
-    Graphite(){
+    public Graphite(){
         logger  = new GraphiteLogger();
         logger.setGraphitePort(2003);
         logger.setGraphiteHost("graphite");
