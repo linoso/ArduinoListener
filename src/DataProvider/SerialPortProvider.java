@@ -70,11 +70,12 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
 
         CommPortIdentifier portId = null;
         Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
-
+        System.out.println("Before entering the elements");
         //First, Find an instance of serial port as set in PORT_NAMES.
         while (portEnum.hasMoreElements()) {
             CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
             for (String portName : PORT_NAMES) {
+                System.out.println("portName: "+currPortId.getName());
                 if (currPortId.getName().equals(portName)) {
                     portId = currPortId;
                     break;
