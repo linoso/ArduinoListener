@@ -35,8 +35,7 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
      * making the displayed results codepage independent
      */
     private BufferedReader input;
-    /** The output stream to the port */
-    private OutputStream output;
+
 
     private BlockingQueue<String> internalQueue;
     /** Milliseconds to block while waiting for port open */
@@ -101,7 +100,6 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
 
             // open the streams
             input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-            output = serialPort.getOutputStream();
 
             // add event listeners
             serialPort.addEventListener(this);
@@ -142,18 +140,9 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
         // Ignore all the other eventTypes, but you should consider the other ones.
     }
 
-    public static void main(String[] args) throws Exception {
-        SerialPortProvider main = new SerialPortProvider();
-        main.initialize();
-        Thread t=new Thread() {
-            public void run() {
-                //the following line will keep this app alive for 1000 seconds,
-                //waiting for events to occur and responding to them (printing incoming messages to console).
-                try {Thread.sleep(1000000);} catch (InterruptedException ie) {}
-            }
-        };
-        t.start();
-        System.out.println("Started");
+    public void finalize()
+    {
+        close();
     }
 }
 
