@@ -27,6 +27,15 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="java-statsd-client-3.0.2-sources" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/rxtx-2.1.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

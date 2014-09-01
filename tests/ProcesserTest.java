@@ -1,6 +1,11 @@
+import DataConsumer.Graphite;
+import DataConsumer.NetworkProtocol.UdpProtocol;
+import DataConsumer.NetworkProtocolInterface;
+import DataProvider.RandomGenerator;
 import DataProvider.SingleRead;
 
-import static org.junit.Assert.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class ProcesserTest {
 
@@ -9,18 +14,18 @@ public class ProcesserTest {
     ConsumerTest consumer;
     @org.junit.Before
     public void setUp() throws Exception {
-        consumer = new ConsumerTest();
-        provider = new ProviderTest();
-        sut = new Processer(provider,consumer);
+        BlockingQueue<SingleRead> queue = new ArrayBlockingQueue<SingleRead>(5);
+        RandomGenerator rand =  new RandomGenerator();
+        queue.add(rand.read());
+        queue.add(rand.read());
+        queue.add(rand.read());
+        queue.add(rand.read());
+        queue.add(rand.read());
+        NetworkProtocolInterface nt= new UdpProtocol("graphite", 2003);
+        sut =  new Processer(new Graphite(nt),queue);
+        sut.run();
     }
 
-    @org.junit.Test
-    public void testRead() throws Exception {
-        SingleRead expected = new SingleRead();
-        provider.setRead(expected);
-        sut.processData();
-        SingleRead read = consumer.getRead();
-        assertEquals(expected,read);
-    }
+
 }
 
