@@ -25,6 +25,7 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
     private static final String PORT_NAMES[] = {
             "/dev/tty.usbserial-A9007UX1", // Mac OS X
             "/dev/ttyACM0", // Raspberry Pi
+            "/dev/ttyAMA0", // Raspberry Pi
             "/dev/ttyUSB0", // Linux
             "COM4", // Windows
     };
