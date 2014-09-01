@@ -65,7 +65,7 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
     public void initialize() {
         // the next line is for Raspberry Pi and
         // gets us into the while loop and was suggested here was suggested http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
-        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0");
+        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyAMA0");
 
         internalQueue = new ArrayBlockingQueue<String>(50);
 
