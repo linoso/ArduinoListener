@@ -4,10 +4,11 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+import org.apache.log4j.Logger;
 
+import javax.management.RuntimeErrorException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -19,7 +20,7 @@ import java.util.concurrent.BlockingQueue;
 public class SerialPortProvider implements SerialPortEventListener,  ProviderInterface {
 
 
-
+    static Logger logger = Logger.getLogger(SerialPortProvider.class.getName());
     SerialPort serialPort;
     /** The port we're normally going to use. */
     private static final String PORT_NAMES[] = {
@@ -45,7 +46,7 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
 
     private Converter converter = null;
 
-    public SerialPortProvider() {
+    public SerialPortProvider() throws Exception {
         converter  = new Converter();
         this.initialize();
     }
@@ -56,56 +57,52 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
             String st = internalQueue.take();
             return converter.toSingleRead(st);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.warn("Some problem with the internalQueue while waiting for the new data to read", e);
         }
         return null;
     }
 
-    public void initialize() {
+    public void initialize() throws Exception {
         // the next line is for Raspberry Pi and
         // gets us into the while loop and was suggested here was suggested http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
-        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyAMA0");
+        //System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyAMA0");
 
         internalQueue = new ArrayBlockingQueue<String>(50);
 
         CommPortIdentifier portId = null;
         Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
-        System.out.println("Before entering the elements");
+        logger.info("Before entering the elements for the serial port");
         //First, Find an instance of serial port as set in PORT_NAMES.
         while (portEnum.hasMoreElements()) {
             CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
             for (String portName : PORT_NAMES) {
-                System.out.println("portName: "+currPortId.getName());
+                logger.info("Found serial port Name: " + currPortId.getName());
                 if (currPortId.getName().equals(portName)) {
+                    logger.info("Found one of the valid port: "+currPortId.getName());
                     portId = currPortId;
                     break;
                 }
             }
         }
         if (portId == null) {
-            System.out.println("Could not find COM port.");
-            return;
+            String msg = "Could not find Serial port, please verify if the Arduino Device is properly connected to one of the available serial interfaces";
+            logger.error(msg);
+            throw new RuntimeException(msg);
         }
 
         try {
             // open serial port, and use class name for the appName.
-            serialPort = (SerialPort) portId.open(this.getClass().getName(),
-                    TIME_OUT);
-
+            serialPort = (SerialPort) portId.open(this.getClass().getName(), TIME_OUT);
             // set port parameters
-            serialPort.setSerialPortParams(DATA_RATE,
-                    SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE);
-
+            serialPort.setSerialPortParams(DATA_RATE,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
             // open the streams
             input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-
             // add event listeners
             serialPort.addEventListener(this);
             serialPort.notifyOnDataAvailable(true);
         } catch (Exception e) {
-            System.err.println(e.toString());
+            logger.error("Cannot open the serial port.", e);
+            throw e;
         }
     }
 
@@ -129,15 +126,15 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
                 String inputLine=input.readLine();
                 if(internalQueue.remainingCapacity()>0){
                     internalQueue.add(inputLine);
+                    logger.debug("Read line from serial port and added to the internal queue:"+inputLine);
                 } else {
-                    System.out.println("skipped a line");
+                    logger.warn("No room left in the internal queue from the port to read and parse. the line "+
+                            inputLine+" will be skipped");
                 }
-                System.out.println(inputLine);
             } catch (Exception e) {
-                System.err.println(e.toString());
+                logger.error("Cannot read the line from the serial port ", e);
             }
         }
-        // Ignore all the other eventTypes, but you should consider the other ones.
     }
 
     public void finalize()

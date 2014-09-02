@@ -4,84 +4,104 @@ package DataProvider;
  * Created by Lino on 19/08/2014.
  */
 public class SingleRead {
-    private int temp1;
-    private int temp2;
-    private int temp3;
-    private int temp4;
-    private double pressure;
-    private double volt;
-    private double ampere;
+    private Integer temp1 = null;
+    private Integer temp2 = null;
+    private Integer temp3 = null;
+    private Integer temp4 = null;
+    private Double pressure = null;
+    private Double volt = null;
+    private Double ampere = null;
 
-    public int getTemp1() {
+    public Integer getTemp1() {
         return temp1;
     }
 
-    public void setTemp1(int temp1) {
+    public void setTemp1(Integer temp1) {
         this.temp1 = temp1;
     }
 
-    public int getTemp2() {
+    public Integer getTemp2() {
         return temp2;
     }
 
-    public void setTemp2(int temp2) {
+    public void setTemp2(Integer temp2) {
         this.temp2 = temp2;
     }
 
-    public int getTemp3() {
+    public Integer getTemp3() {
         return temp3;
     }
 
-    public void setTemp3(int temp3) {
+    public void setTemp3(Integer temp3) {
         this.temp3 = temp3;
     }
 
-    public int getTemp4() {
+    public Integer getTemp4() {
         return temp4;
     }
 
-    public void setTemp4(int temp4) {
+    public void setTemp4(Integer temp4) {
         this.temp4 = temp4;
     }
 
-    public double getPressure() {
+    public Double getPressure() {
         return pressure;
     }
 
-    public void setPressure(double pressure) {
+    public void setPressure(Double pressure) {
         this.pressure = pressure;
     }
 
-    public double getVolt() {
+    public Double getVolt() {
         return volt;
     }
 
-    public int getMilliVolt(){
-        return (int)(volt* (double)1000);
-    }
-
-    public void setVolt(double volt) {
+    public void setVolt(Double volt) {
         this.volt = volt;
     }
 
-    public double getAmpere() {
+    public Double getAmpere() {
         return ampere;
     }
 
-    public int getMilliAmpere(){
-        return (int)(ampere* (double)1000);
-    }
-
-    public void setAmpere(double ampere) {
+    public void setAmpere(Double ampere) {
         this.ampere = ampere;
     }
 
-    public double getWatt(){
-        return (ampere* volt);
+    public Integer getMilliVolt(){
+        Double mesurament = volt;
+        return convertIntoMilli(mesurament);
+    }
+    public Integer getMilliBar(){
+        Double mesurament = pressure;
+        return convertIntoMilli(mesurament);
     }
 
-    public int getMilliWatt(){
-        return (int)((ampere* volt)* (double) 1000);
+    public Integer getMilliAmpere(){
+        return convertIntoMilli(volt);
+    }
+
+    public Double getWatt(){
+        return calculatePower();
+    }
+
+
+    private Double calculatePower() {
+        if(ampere != null && volt != null)
+            return (ampere* volt);
+        else
+            return null;
+    }
+
+    public Integer getMilliWatt(){
+        return convertIntoMilli(calculatePower());
+    }
+
+    private Integer convertIntoMilli(Double mesurament) {
+        if(mesurament!= null)
+            return new Integer((int)(mesurament* (double)1000));
+        else
+            return null;
     }
 
     @Override
@@ -108,9 +128,6 @@ public class SingleRead {
         result = 31 * result + temp2;
         result = 31 * result + temp3;
         result = 31 * result + temp4;
-        result = 31 * result + (int)pressure;
-        result = 31 * result + (int)volt;
-        result = 31 * result + (int)ampere;
         return result;
     }
 }

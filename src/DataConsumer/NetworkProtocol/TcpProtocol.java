@@ -1,6 +1,7 @@
 package DataConsumer.NetworkProtocol;
 
 import DataConsumer.NetworkProtocolInterface;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -15,6 +16,7 @@ public class TcpProtocol implements NetworkProtocolInterface{
     int port;
     String host;
     Socket socket;
+    static Logger logger = Logger.getLogger(UdpProtocol.class.getName());
 
     public TcpProtocol(String host,int port) {
         this.port = port;
@@ -22,11 +24,12 @@ public class TcpProtocol implements NetworkProtocolInterface{
     }
 
     @Override
-    public void initialize() {
+    public void initialize() throws IOException {
         try {
             socket = new Socket(host, port);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Cannot create a Socket instance, nothing can be done here", e);
+            throw e;
         }
     }
 
@@ -38,7 +41,7 @@ public class TcpProtocol implements NetworkProtocolInterface{
             writer.flush();
             writer.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Cannot send a package, I'll try with the next one", e);
         }
     }
 
@@ -47,7 +50,7 @@ public class TcpProtocol implements NetworkProtocolInterface{
         try {
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("cannot close the socket properly, it will stay open...", e);
         }
     }
 }

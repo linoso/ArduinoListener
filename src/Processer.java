@@ -33,7 +33,6 @@ public class Processer implements Runnable{
     }
 
     public void processData(SingleRead read)  {
-        System.out.println("Consumed one read");
         try {
             consumer.publish(read);
         } catch (Exception e) {

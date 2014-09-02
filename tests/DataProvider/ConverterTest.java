@@ -39,7 +39,7 @@ public class ConverterTest {
 
     @Test
     public void testToSingleRead() throws Exception {
-        String str = "123.00;456.55;789.50;321.05;654.50;987.51;231.49;";
+        String str = "+123.00;+456.55;+789.50;+321.05;+654.50;+987.51;+231.49;";
         SingleRead sr = sut.toSingleRead(str);
 
         SingleRead expected = new SingleRead();
@@ -56,7 +56,7 @@ public class ConverterTest {
 
     @Test
     public void testToSingleReadWithNan() throws Exception {
-        String str = "123.45;456.65;nan;321.12;nan;987.51;231.49;";
+        String str = "+123.45;+456.65;nan;321.12;nan;+987.51;+231.49;";
         SingleRead sr = sut.toSingleRead(str);
 
         SingleRead expected = new SingleRead();

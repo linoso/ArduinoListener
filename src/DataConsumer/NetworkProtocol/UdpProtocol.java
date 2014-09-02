@@ -1,6 +1,7 @@
 package DataConsumer.NetworkProtocol;
 
 import DataConsumer.NetworkProtocolInterface;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.*;
@@ -13,19 +14,25 @@ public class UdpProtocol implements NetworkProtocolInterface {
     private String host;
     private InetAddress address;
     private DatagramSocket clientSocket;
-
+    static Logger logger = Logger.getLogger(UdpProtocol.class.getName());
     public UdpProtocol(String host, int port) {
         this.port = port;
         this.host = host;
     }
 
     @Override
-    public void initialize() {
+    public void initialize() throws UnknownHostException {
 
         try {
             address = InetAddress.getByName(host);
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            logger.error("Unknown Host: "+host+", impossible to create a connection. Localhost will be used.", e);
+            try {
+                address = InetAddress.getLocalHost();
+            } catch (UnknownHostException e1) {
+                logger.error("Neither localhost works, nothing else can be done", e1);
+                throw e1;
+            }
         }
         try {
             clientSocket = new DatagramSocket();
@@ -42,7 +49,7 @@ public class UdpProtocol implements NetworkProtocolInterface {
         try {
             clientSocket.send(sendPacket);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Cannot send a  message. I'll try again with the next one", e);
         }
     }
 

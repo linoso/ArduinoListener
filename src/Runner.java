@@ -35,8 +35,20 @@ public class Runner {
 
         logger.info("Entering application.");
         NetworkProtocolInterface network = createNetworkProtocolInterface();
-        ConsumerInterface cons = createConsumerInterface(network);
-        ProviderInterface prov = createProviderInterface();
+        ConsumerInterface cons;
+        try {
+            cons = createConsumerInterface(network);
+        } catch (Exception e) {
+           logger.error("cannot create the ConsumerInterface, no point in continuing with the sw", e);
+           return;
+        }
+        ProviderInterface prov = null;
+        try {
+            prov = createProviderInterface();
+        } catch (Exception e) {
+            logger.error("cannot create the ProviderInterface, no point in continuing with the sw", e);
+            return;
+        }
         BlockingQueue<SingleRead> queue = new ArrayBlockingQueue<SingleRead>(100);
         Processer proc = new Processer(cons,queue);
         DeviceDataReader reader = new DeviceDataReader(prov,queue);
@@ -61,8 +73,6 @@ public class Runner {
             logOnLoggerAndStdOut(e, msg);
             return true;
         }
-
-
         appConfigs.setHostname(props.getProperty("database.host"));
         appConfigs.setProtocol(props.getProperty("database.protocol"));
         appConfigs.setPort(Integer.parseInt(props.getProperty("database.port")));
@@ -71,11 +81,11 @@ public class Runner {
         return false;
     }
 
-    private static Graphite createConsumerInterface(NetworkProtocolInterface network) {
+    private static Graphite createConsumerInterface(NetworkProtocolInterface network) throws Exception {
         return new Graphite(network);
     }
 
-    private static ProviderInterface createProviderInterface() {
+    private static ProviderInterface createProviderInterface() throws Exception {
         ProviderInterface pi = null;
         dataProvider enumval = dataProvider.valueOf(appConfigs.getDataProvider());
         switch (enumval){
