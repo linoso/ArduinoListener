@@ -39,7 +39,6 @@ public class TcpProtocol implements NetworkProtocolInterface{
             Writer writer = new OutputStreamWriter(socket.getOutputStream());
             writer.write(msg);
             writer.flush();
-            writer.close();
         } catch (Exception e) {
             logger.error("Cannot send a package, I'll try with the next one", e);
         }
