@@ -16,7 +16,7 @@ public class TcpProtocol implements NetworkProtocolInterface{
     int port;
     String host;
     Socket socket;
-    static Logger logger = Logger.getLogger(UdpProtocol.class.getName());
+    static Logger logger = Logger.getLogger(TcpProtocol.class.getName());
 
     public TcpProtocol(String host,int port) {
         this.port = port;

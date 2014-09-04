@@ -3,8 +3,8 @@
 java -cp /home/pi/ArduinoListener/src/ Runner  &> /dev/null
 
 pid=`ps aux | grep Runner | awk '{print $2}'`
-if pid != null; then
- return  0;
+if $pid != null; then
+ echo $pid
  else
- return 1;
+ echo "program did not start"
 fi
