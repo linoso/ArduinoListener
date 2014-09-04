@@ -23,8 +23,8 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class Runner {
     static Logger logger = Logger.getLogger(Runner.class.getName());
-    static String logConfFile = "logconfig.properties";
-    static String appConfFile = "appconfig.properties";
+    static String logConfFile = "logConfigDeamon.properties";
+    static String appConfFile = "appConfig.properties";
     static AppConfigs appConfigs = new AppConfigs();
 
     public static void main(String[] args)  {

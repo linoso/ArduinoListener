@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -cp /home/pi/ArduinoListener Runner
+java -cp /home/pi/ArduinoListener/src/ Runner
