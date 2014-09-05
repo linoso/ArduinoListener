@@ -25,11 +25,28 @@ public class TcpProtocol implements NetworkProtocolInterface{
 
     @Override
     public void initialize() throws IOException {
-        try {
-            socket = new Socket(host, port);
-        } catch (IOException e) {
-            logger.error("Cannot create a Socket instance, nothing can be done here", e);
-            throw e;
+
+        int count = 0;
+        IOException toTrow  =  null;
+        while(count<10 &&  socket==null) {
+            try {
+                socket = new Socket(host, port);
+            } catch (IOException e) {
+                logger.error("Cannot create a Socket instance, nothing can be done here", e);
+                toTrow = e;
+            }
+            if(socket == null){
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            count ++;
+        }
+        if(count==10 && socket == null)
+        {
+            throw toTrow;
         }
     }
 
