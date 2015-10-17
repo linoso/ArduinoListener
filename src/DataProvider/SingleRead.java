@@ -78,7 +78,7 @@ public class SingleRead {
     }
 
     public Integer getMilliAmpere(){
-        return convertIntoMilli(volt);
+        return convertIntoMilli(ampere);
     }
 
     public Double getWatt(){

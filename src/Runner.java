@@ -94,7 +94,7 @@ public class Runner {
                 pi = new SerialPortProvider ();
                 break;
             case RANDOM:
-                logger.info("Creating  a UdpProtocol class");
+                logger.info("Creating  a Random Provider class");
                 pi = new RandomGenerator();
                 break;
             default:
