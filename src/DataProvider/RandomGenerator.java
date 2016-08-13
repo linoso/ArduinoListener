@@ -7,6 +7,12 @@ import org.apache.log4j.Logger;
  */
 public class RandomGenerator implements ProviderInterface {
     static Logger logger = Logger.getLogger(RandomGenerator.class.getName());
+    private Calibrator calibrator;
+
+    public RandomGenerator(Calibrator calibrator) {
+        this.calibrator = calibrator;
+    }
+
     @Override
     public SingleRead read() {
         try {
@@ -19,13 +25,13 @@ public class RandomGenerator implements ProviderInterface {
 
     private SingleRead generateRandomSingleRead(){
         SingleRead read = new SingleRead();
-        read.setTemp1((300+(int)(Math.random()*20)));
-        read.setTemp2(300+(int)(Math.random()*20));
-        read.setTemp3(600+(int)(Math.random()*40));
-        read.setTemp4(600+(int)(Math.random()*40));
-        read.setAmpere(new Double((double)(20+(int)(Math.random()*5))));
-        read.setPressure(new Double((double)(600+(int)(Math.random()*40))));
-        read.setVolt(new Double((double)(20+(int)(Math.random()*20))));
+        read.setTemp1(calibrator.adjustTemp1(300+(int)(Math.random()*20)));
+        read.setTemp2(calibrator.adjustTemp2(300+(int)(Math.random()*20)));
+        read.setTemp3(calibrator.adjustTemp3(600+(int)(Math.random()*40)));
+        read.setTemp4(calibrator.adjustTemp4(600+(int)(Math.random()*40)));
+        read.setAmpere(calibrator.adjustAmpere(new Double((double)(20+(int)(Math.random()*5)))));
+        read.setPressure(calibrator.adjustPressure(new Double((double)(600+(int)(Math.random()*40)))));
+        read.setVolt(calibrator.adjustVolt(new Double((double)(20+(int)(Math.random()*20)))));
         return read;
     }
 }

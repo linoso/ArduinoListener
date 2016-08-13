@@ -3,14 +3,26 @@ package DataProvider;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Properties;
+
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ConverterTest {
 
     Converter sut;
+    Properties prop;
     @Before
     public void setUp() throws Exception {
-        sut  = new Converter();
+        prop = new Properties();
+        prop.setProperty("temp1","10");
+        prop.setProperty("temp2","2");
+        prop.setProperty("temp3","3");
+        prop.setProperty("temp4","4");
+        prop.setProperty("ampere","1.5");
+        prop.setProperty("volt","2.5");
+        prop.setProperty("pressure","3.5");
+        sut  = new Converter(new Calibrator(prop) );
     }
 
     @Test
@@ -43,28 +55,28 @@ public class ConverterTest {
         SingleRead sr = sut.toSingleRead(str);
 
         SingleRead expected = new SingleRead();
-        expected.setTemp1(123);
-        expected.setTemp2(457);
-        expected.setTemp3(789);
-        expected.setTemp4(321);
-        expected.setVolt(654.50);
-        expected.setAmpere(987.51);
-        expected.setPressure(231.49);
+        assertEquals(1230,sr.getTemp1());
+        assertEquals(914, sr.getTemp2());
+        assertEquals(2367, sr.getTemp3());
+        assertEquals(1284, sr.getTemp4());
+        assertEquals(1636.25, sr.getVolt().doubleValue());
+        assertEquals(1481.2649999999999,sr.getAmpere().doubleValue());
+        assertEquals(810.215,sr.getPressure().doubleValue());
 
-        assertEquals(expected,sr);
     }
 
-    @Test
     public void testToSingleReadWithNan() throws Exception {
         String str = "+123.45;+456.65;nan;321.12;nan;+987.51;+231.49;";
         SingleRead sr = sut.toSingleRead(str);
 
         SingleRead expected = new SingleRead();
-        expected.setTemp1(123);
-        expected.setTemp2(457);
-        expected.setTemp4(321);
-        expected.setAmpere(987.51);
-        expected.setPressure(231.49);
+        assertEquals(1230,sr.getTemp1());
+        assertEquals(914, sr.getTemp2());
+        assertNull(sr.getTemp3());
+        assertEquals(1284, sr.getTemp4());
+        assertNull(sr.getVolt());
+        assertEquals(2468.775,sr.getAmpere().doubleValue());
+        assertEquals(810.215,sr.getPressure().doubleValue());
 
         assertEquals(expected,sr);
     }

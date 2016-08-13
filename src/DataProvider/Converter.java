@@ -13,7 +13,9 @@ public class Converter {
 
     static Logger logger = Logger.getLogger(Converter.class.getName());
     Pattern pattern;
-    public Converter() {
+    Calibrator calibrator;
+    public Converter(Calibrator calibrator) {
+        this.calibrator = calibrator;
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("^");
         for(int i = 0 ; i<7; i++){
@@ -30,37 +32,38 @@ public class Converter {
         SingleRead sr = new SingleRead();
         String[] elements= line.split(";");
         try {
-            sr.setTemp1(convertDoubleStringIntoInt(elements[0]));
+            sr.setTemp1(calibrator.adjustTemp1(convertDoubleStringIntoInt(elements[0])));
+
         } catch (InvalidPropertiesFormatException e) {
             logWarning(elements, 0 , "temp1" );
         }
         try {
-            sr.setTemp2(convertDoubleStringIntoInt(elements[1]));
+            sr.setTemp2(calibrator.adjustTemp2(convertDoubleStringIntoInt(elements[1])));
         } catch (InvalidPropertiesFormatException e) {
             logWarning(elements, 1 , "temp2" );
         }
         try {
-            sr.setTemp3(convertDoubleStringIntoInt(elements[2]));
+            sr.setTemp3(calibrator.adjustTemp3(convertDoubleStringIntoInt(elements[2])));
         } catch (InvalidPropertiesFormatException e) {
             logWarning(elements, 2 , "temp3" );
         }
         try {
-            sr.setTemp4(convertDoubleStringIntoInt(elements[3]));
+            sr.setTemp4(calibrator.adjustTemp4(convertDoubleStringIntoInt(elements[3])));
         } catch (InvalidPropertiesFormatException e) {
             logWarning(elements, 3 , "temp4" );
         }
         try {
-            sr.setVolt(convertDoubleStringIntoDouble(elements[4]));
+            sr.setVolt(calibrator.adjustVolt(convertDoubleStringIntoDouble(elements[4])));
         } catch (InvalidPropertiesFormatException e) {
             logWarning(elements, 4 , "volt" );
         }
         try {
-            sr.setAmpere(convertDoubleStringIntoDouble(elements[5]));
+            sr.setAmpere(calibrator.adjustAmpere(convertDoubleStringIntoDouble(elements[5])));
         } catch (InvalidPropertiesFormatException e) {
             logWarning(elements, 5 , "ampere" );
         }
         try {
-            sr.setPressure(convertDoubleStringIntoDouble(elements[6]));
+            sr.setPressure(calibrator.adjustPressure(convertDoubleStringIntoDouble(elements[6])));
         } catch (InvalidPropertiesFormatException e) {
             logWarning(elements, 6 , "pressure" );
         }

@@ -3,10 +3,7 @@ import DataConsumer.Graphite;
 import DataConsumer.NetworkProtocol.TcpProtocol;
 import DataConsumer.NetworkProtocol.UdpProtocol;
 import DataConsumer.NetworkProtocolInterface;
-import DataProvider.ProviderInterface;
-import DataProvider.RandomGenerator;
-import DataProvider.SerialPortProvider;
-import DataProvider.SingleRead;
+import DataProvider.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,8 +21,10 @@ import org.apache.log4j.PropertyConfigurator;
 public class Runner {
     static Logger logger = Logger.getLogger(Runner.class.getName());
     static String logConfFile = "logConfigDeamon.properties";
-    static String appConfFile = "appConfig.properties";
+    static String appConfFile = "appConfigWin.properties";
+    static String calibrateFIle = "calibrate.properties";
     static AppConfigs appConfigs = new AppConfigs();
+    static Calibrator calibrator;
 
     public static void main(String[] args)  {
 
@@ -33,6 +32,11 @@ public class Runner {
         PropertyConfigurator.configure(logConfFile);
         if (loadAppConfig()) return;
 
+        try {
+            calibrator = loadCalibrator();
+        } catch (RuntimeException e){
+            return;
+        }
         logger.info("Entering application.");
         NetworkProtocolInterface network = createNetworkProtocolInterface();
         ConsumerInterface cons;
@@ -55,6 +59,28 @@ public class Runner {
         new Thread(proc).start();
         new Thread(reader).start();
         logger.info("Exiting application.");
+    }
+
+    private static Calibrator loadCalibrator() {
+
+        Properties props = new Properties();
+        FileInputStream fis = null;
+
+        try {
+            fis = new FileInputStream(calibrateFIle);
+            props.load(fis);
+        } catch (FileNotFoundException e) {
+            String msg = "Cannot Find Properties file  for the application, looking in path:" + calibrateFIle;
+            logOnLoggerAndStdOut(e, msg);
+            throw new  RuntimeException("Cannot Find Properties file  for the application, looking in path:" + calibrateFIle);
+        } catch (IOException e) {
+            String msg = "Cannot read Properties file  for the application, looking in path:" + calibrateFIle;
+            logOnLoggerAndStdOut(e, msg);
+            throw new  RuntimeException("Cannot Find Properties file  for the application, looking in path:" + calibrateFIle);
+        }
+        Calibrator calibrator = new Calibrator(props);
+
+        return calibrator;
     }
 
     private static boolean loadAppConfig() {
@@ -91,14 +117,14 @@ public class Runner {
         switch (enumval){
             case SERIAL:
                 logger.info("Creating  a SerialPortProvider class");
-                pi = new SerialPortProvider ();
+                pi = new SerialPortProvider (calibrator);
                 break;
             case RANDOM:
                 logger.info("Creating  a Random Provider class");
-                pi = new RandomGenerator();
+                pi = new RandomGenerator(calibrator);
                 break;
             default:
-                pi = new SerialPortProvider ();
+                pi = new SerialPortProvider (calibrator);
                 logger.error("appConfigs.getProtocol should return 'SERIAL' or 'RANDOM' instead "
                         +appConfigs.getDataProvider()+" . please change the value for dataprovider.class in appconfig.properties");
         }

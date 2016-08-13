@@ -46,8 +46,8 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
 
     private Converter converter = null;
 
-    public SerialPortProvider() throws Exception {
-        converter  = new Converter();
+    public SerialPortProvider(Calibrator calibrator) throws Exception {
+        converter  = new Converter(calibrator);
         this.initialize();
     }
 
