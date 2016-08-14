@@ -22,6 +22,13 @@ public class CalibratorTest {
         prop.setProperty("ampere","1.09");
         prop.setProperty("volt","1.10");
         prop.setProperty("pressure","1.11");
+        prop.setProperty("temp1Tare","-1");
+        prop.setProperty("temp2Tare","-5");
+        prop.setProperty("temp3Tare","-8");
+        prop.setProperty("temp4Tare","-11");
+        prop.setProperty("ampereTare","-10");
+        prop.setProperty("voltTare","-20");
+        prop.setProperty("pressureTare","-30");
         sut = new Calibrator(prop);
     }
 
@@ -33,32 +40,32 @@ public class CalibratorTest {
 
     @Test
     public void calibrateTemp1PositiveTest() throws Exception {
-        assertEquals(105, sut.adjustTemp1(100));
+        assertEquals(104, sut.adjustTemp1(100));
     }
 
     @Test
     public void calibrateTemp2PositiveTest() throws Exception {
-        assertEquals(106, sut.adjustTemp2(100));
+        assertEquals(101, sut.adjustTemp2(100));
     }
     @Test
     public void calibrateTemp3PositiveTest() throws Exception {
-        assertEquals(107, sut.adjustTemp3(100));
+        assertEquals(99, sut.adjustTemp3(100));
     }
     @Test
     public void calibrateTemp4PositiveTest() throws Exception {
-        assertEquals(108, sut.adjustTemp4(100));
+        assertEquals(97, sut.adjustTemp4(100));
     }
     @Test
     public void calibrateAmpPositiveTest() throws Exception {
-        assertEquals(109, sut.adjustAmpere(new Double(100)).intValue());
+        assertEquals(99, sut.adjustAmpere(new Double(100)).intValue());
     }
     @Test
     public void calibrateVoltPositiveTest() throws Exception {
-        assertEquals(110, sut.adjustVolt(new Double(100)).intValue());
+        assertEquals(90, sut.adjustVolt(new Double(100)).intValue());
     }
     @Test
     public void calibratePresPositiveTest() throws Exception {
-        assertEquals(111, sut.adjustPressure(new Double(100)).intValue());
+        assertEquals(81, sut.adjustPressure(new Double(100)).intValue());
     }
 
 }

@@ -11,14 +11,42 @@ public class Calibrator {
     HashMap<String, Double> config;
     public Calibrator(Properties prop) {
         config = new HashMap<String, Double>(8);
-        config.put("t1",Double.parseDouble(prop.getProperty("temp1")));
-        config.put("t2",Double.parseDouble(prop.getProperty("temp2")));
-        config.put("t3",Double.parseDouble(prop.getProperty("temp3")));
-        config.put("t4",Double.parseDouble(prop.getProperty("temp4")));
-        config.put("amp",Double.parseDouble(prop.getProperty("ampere")));
-        config.put("volt",Double.parseDouble(prop.getProperty("volt")));
-        config.put("pres",Double.parseDouble(prop.getProperty("pressure")));
+        putInConfigValueOrOne(prop, "temp1", "t1");
+        putInConfigValueOrOne(prop, "temp2", "t2");
+        putInConfigValueOrOne(prop, "temp3", "t3");
+        putInConfigValueOrOne(prop, "temp4", "t4");
+        putInConfigValueOrOne(prop, "ampere", "amp");
+        putInConfigValueOrOne(prop, "volt", "volt");
+        putInConfigValueOrOne(prop, "pressure", "pres");
+        putInConfigValueOrZero(prop, "t1Tare", "temp1Tare");
+        putInConfigValueOrZero(prop, "t2Tare", "temp2Tare");
+        putInConfigValueOrZero(prop, "t3Tare", "temp3Tare");
+        putInConfigValueOrZero(prop, "t4Tare", "temp4Tare");
+        putInConfigValueOrZero(prop, "ampTare", "ampereTare");
+        putInConfigValueOrZero(prop, "voltTare", "voltTare");
+        putInConfigValueOrZero(prop, "presTare", "pressureTare");
     }
+
+    private void putInConfigValueOrZero(Properties prop, String t1Tare, String temp1Tare) {
+        config.put(t1Tare, getValueOrZero(prop, temp1Tare));
+    }
+
+    private void putInConfigValueOrOne(Properties prop, String keyProp, String keyConfig) {
+        String value = prop.getProperty(keyProp);
+        if(value == null){
+            value =  "1";
+        }
+        config.put(keyConfig,Double.parseDouble(value));
+    }
+
+    private double getValueOrZero(Properties prop, String key) {
+        String value = prop.getProperty(key);
+        if(value == null){
+            value = "0";
+        }
+        return Double.parseDouble(value);
+    }
+
     public Integer adjustTemp1(Integer t1 )
     {
         return new Integer(caliberDouble(t1.doubleValue(), "t1").intValue());
@@ -54,7 +82,9 @@ public class Calibrator {
         if(null == value){
             throw new InvalidParameterException("Value cannot be null");
         }
+
         Double caliber = config.get(configIndex);
-        return value*caliber;
+        Double tare = config.get(configIndex+"Tare");
+        return (value*caliber)+tare;
     }
 }
