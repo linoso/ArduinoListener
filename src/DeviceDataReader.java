@@ -21,6 +21,7 @@ public class DeviceDataReader implements Runnable {
             try {
 
                 Thread.sleep(500);
+                provider.refreshConfigs();
                 SingleRead data = provider.read();
                 if(queue.remainingCapacity()>0) {
                     queue.add(data);
