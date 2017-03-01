@@ -25,7 +25,7 @@ public class ProcesserTest {
         prop.setProperty("ampere","1.5");
         prop.setProperty("volt","2.5");
         prop.setProperty("pressure","3.5");
-        RandomGenerator rand =  new RandomGenerator(new Calibrator(prop));
+        RandomGenerator rand =  new RandomGenerator(new Calibrator(prop, null));
         queue.add(rand.read());
         queue.add(rand.read());
         queue.add(rand.read());

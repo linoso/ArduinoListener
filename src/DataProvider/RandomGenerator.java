@@ -23,6 +23,11 @@ public class RandomGenerator implements ProviderInterface {
         return generateRandomSingleRead();
     }
 
+    @Override
+    public void refreshConfigs() {
+        calibrator.reloadFromFile();
+    }
+
     private SingleRead generateRandomSingleRead(){
         SingleRead read = new SingleRead();
         read.setTemp1(calibrator.adjustTemp1(300+(int)(Math.random()*20)));

@@ -8,8 +8,6 @@ import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import static org.junit.Assert.*;
-
 public class DeviceDataReaderTest {
 
     DeviceDataReader sut;
@@ -25,7 +23,7 @@ public class DeviceDataReaderTest {
         prop.setProperty("volt","2.5");
         prop.setProperty("pressure","3.5");
         queue = new ArrayBlockingQueue<SingleRead>(5);
-        sut = new DeviceDataReader(new RandomGenerator(new Calibrator(prop)),queue);
+        sut = new DeviceDataReader(new RandomGenerator(new Calibrator(prop, null)),queue);
     }
 
     @Test

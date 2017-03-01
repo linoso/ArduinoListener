@@ -4,4 +4,5 @@ package DataProvider;
  */
 public interface ProviderInterface {
     SingleRead read();
+    void refreshConfigs();
 }

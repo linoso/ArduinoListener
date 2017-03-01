@@ -1,5 +1,10 @@
 package DataProvider;
 
+import org.apache.log4j.Logger;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Properties;
@@ -8,9 +13,46 @@ import java.util.Properties;
  * Created by Lino on 09/04/2016.
  */
 public class Calibrator {
+
+    static Logger logger = Logger.getLogger(Calibrator.class.getName());
     HashMap<String, Double> config;
-    public Calibrator(Properties prop) {
+    String fileName;
+    public Calibrator(Properties prop, String fileName) {
         config = new HashMap<String, Double>(8);
+        loadProperties(prop);
+        this.fileName = fileName;
+    }
+
+    public void reloadFromFile()
+    {
+        Properties props = new Properties();
+        FileInputStream fis = null;
+
+        try {
+            fis = new FileInputStream(fileName);
+        } catch (FileNotFoundException e){
+            String msg = "Cannot Find Properties file while reloading for the application, looking in path:" + fileName;
+            logger.error(msg, e);
+            return;
+        }
+        try {
+            props.load(fis);
+        } catch (IOException e) {
+            String msg = "Cannot reload Properties file  for the application, looking in path:" + fileName;
+            logger.error(msg, e);
+            return;
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException e) {
+                String msg = "Cannot close file:" + fileName;
+                logger.error(msg, e);
+            }
+        }
+        loadProperties(props);
+    }
+
+    public void loadProperties(Properties prop) {
         putInConfigValueOrOne(prop, "temp1", "t1");
         putInConfigValueOrOne(prop, "temp2", "t2");
         putInConfigValueOrOne(prop, "temp3", "t3");

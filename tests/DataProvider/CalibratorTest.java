@@ -29,12 +29,12 @@ public class CalibratorTest {
         prop.setProperty("ampereTare","-10");
         prop.setProperty("voltTare","-20");
         prop.setProperty("pressureTare","-30");
-        sut = new Calibrator(prop);
+        sut = new Calibrator(prop, null);
     }
 
     @Test(expected = Exception.class)
     public void calibrateTemp1NullTest(){
-        Calibrator sut = new Calibrator(prop);
+        Calibrator sut = new Calibrator(prop, null);
         sut.adjustTemp1(null);
     }
 

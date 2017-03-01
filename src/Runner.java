@@ -78,7 +78,7 @@ public class Runner {
             logOnLoggerAndStdOut(e, msg);
             throw new  RuntimeException("Cannot Find Properties file  for the application, looking in path:" + calibrateFIle);
         }
-        Calibrator calibrator = new Calibrator(props);
+        Calibrator calibrator = new Calibrator(props, calibrateFIle);
 
         return calibrator;
     }

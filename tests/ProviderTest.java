@@ -17,6 +17,10 @@ public class ProviderTest implements ProviderInterface {
     }
 
     @Override
+    public void refreshConfigs() {
+        return;
+    }
+    @Override
     public SingleRead read() {
         return getRead();
     }

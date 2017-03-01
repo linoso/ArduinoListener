@@ -22,7 +22,7 @@ public class ConverterTest {
         prop.setProperty("ampere","1.5");
         prop.setProperty("volt","2.5");
         prop.setProperty("pressure","3.5");
-        sut  = new Converter(new Calibrator(prop) );
+        sut  = new Converter(new Calibrator(prop, null) );
     }
 
     @Test

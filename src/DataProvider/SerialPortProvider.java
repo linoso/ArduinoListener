@@ -21,6 +21,7 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
 
 
     static Logger logger = Logger.getLogger(SerialPortProvider.class.getName());
+    private final Calibrator calibrator;
     SerialPort serialPort;
     /** The port we're normally going to use. */
     private static final String PORT_NAMES[] = {
@@ -30,6 +31,8 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
             "/dev/ttyUSB0", // Linux
             "COM4", // Windows
     };
+
+
     /**
      * A BufferedReader which will be fed by a InputStreamReader
      * converting the bytes into characters
@@ -47,8 +50,14 @@ public class SerialPortProvider implements SerialPortEventListener,  ProviderInt
     private Converter converter = null;
 
     public SerialPortProvider(Calibrator calibrator) throws Exception {
-        converter  = new Converter(calibrator);
+        this.calibrator = calibrator;
+        converter  = new Converter(this.calibrator);
         this.initialize();
+    }
+
+    @Override
+    public void refreshConfigs() {
+        calibrator.reloadFromFile();
     }
 
     @Override
